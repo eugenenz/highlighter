@@ -1,12 +1,13 @@
 <script lang="ts">
 	import EventWrapper from "$components/Feed/EventWrapper.svelte";
 	import { event, event } from "$components/Feed/NoteOld.svelte";
-import currentUser from "$stores/currentUser";
+    import currentUser from "$stores/currentUser";
 	import { ndk } from "@kind0/ui-common";
 	import { NDKEvent, NDKEventId, NDKKind } from "@nostr-dev-kit/ndk";
 	import { NDKEventStore } from "@nostr-dev-kit/ndk-svelte";
 	import { encode } from "punycode";
 	import ScheduleListItem from "./ScheduleListItem.svelte";
+	import { scheduleToPublish } from "$stores/settings";
 
     type ScheduledEvent = {
         scheduleEvent: NDKEvent;
@@ -23,6 +24,9 @@ import currentUser from "$stores/currentUser";
             kinds: [ NDKKind.DVMEventSchedule ],
             authors: [ $currentUser.pubkey ]
         });
+        if (!$events.length) {
+            $scheduleToPublish = 0;
+        }
     }
 
     const now = Math.floor(Date.now() / 1000);
@@ -53,6 +57,7 @@ import currentUser from "$stores/currentUser";
 
                 eventsToPublish = eventsToPublish.sort((a, b) => a.event.created_at! + b.event.created_at!);
                 eventsPublished = eventsPublished.sort((a, b) => a.created_at! - b.created_at!);
+                $scheduleToPublish = eventsToPublish.length;
             } catch (e) {
                 console.error('failed to decrypt event', e);
             }

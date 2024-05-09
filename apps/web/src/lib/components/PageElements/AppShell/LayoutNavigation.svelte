@@ -16,10 +16,13 @@
 	import { hasUnreadNotifications, unreadNotifications } from '$stores/notifications';
 	import SignupModal from '$modals/SignupModal.svelte';
 	import { drafts } from '$stores/drafts';
+	import { scheduleToPublish } from '$stores/settings';
 
     let hasDrafts = false;
-
     $: hasDrafts = $drafts.length > 0;
+
+    let hasScheduled = false;
+    $: hasScheduled = $scheduleToPublish > 0;
 
     let collapsed = false;
     $: collapsed = $layoutNavState === "collapsed";
@@ -46,8 +49,18 @@
     
     $: {
         publicationOptions = [
-            { name: "Schedule", icon: Timer, href: "/schedule" },
-            { name: "Drafts", icon: ChalkboardSimple, href: "/drafts", badge: hasDrafts ? true : undefined },
+            {
+                name: "Schedule",
+                icon: Timer,
+                href: "/schedule",
+                badge: hasScheduled ? true : undefined
+            },
+            {
+                name: "Drafts",
+                icon: ChalkboardSimple,
+                href: "/drafts",
+                badge: hasDrafts ? true : undefined
+            },
         ]
     }
 

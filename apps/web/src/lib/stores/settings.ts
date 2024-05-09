@@ -30,3 +30,9 @@ export const seenOnboardingPromptGridItem = persist(
 	createLocalStorage(),
 	'seen-onboarding-prompt-grid-item'
 );
+
+export const scheduleToPublish = persist(
+	writable<number>(0),
+	createLocalStorage(),
+	'scheduleToPublish'
+);

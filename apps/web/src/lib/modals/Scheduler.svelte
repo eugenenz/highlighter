@@ -5,6 +5,7 @@ import ModalShell from "$components/ModalShell.svelte";
 	import { NDKEvent, dvmSchedule } from "@nostr-dev-kit/ndk";
 	import { Check } from "phosphor-svelte";
 	import { closeModal } from '$utils/modal';
+    import { scheduleToPublish } from '$stores/settings';
 
     export let event: NDKEvent;
 
@@ -59,7 +60,10 @@ import ModalShell from "$components/ModalShell.svelte";
             const confirm = await dvmSchedule(repost, dvmUser, undefined, true, 3000);
             console.log(confirm);
             scheduled = true;
+            $scheduleToPublish = $scheduleToPublish + 1;
             setTimeout(() => closeModal(), 1500);
+        } catch (e) {
+            console.error("error while scheduling: ", e);
         } finally {
             scheduling = false;
         }
